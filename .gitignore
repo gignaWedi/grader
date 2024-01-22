@@ -1,0 +1,6 @@
+grade/
+src/
+exe/
+tests/
+results/
+.vscode/
