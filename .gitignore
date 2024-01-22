@@ -1,6 +1,6 @@
 grade/
-src/
-exe/
-tests/
-results/
+src/*.cpp
+exe/*.exe
+tests/*.in
+results/*.out
 .vscode/
