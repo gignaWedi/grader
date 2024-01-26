@@ -1,28 +1,50 @@
 import os
 import re
 import glob
+import argparse
 
-os.system("compile")
+parser = argparse.ArgumentParser(description="Compile and grade cpp files")
+parser.add_argument("-r", "--recompile", help="force recompile files", action="store_true")
+args = parser.parse_args()
 
+src_directory = "cpp"
 exe_directory = "exe"
 
-for filename in os.listdir(exe_directory):
-    fullname = os.path.join(exe_directory, filename)
+print("Compilation start")
 
-    m = re.search(r"(P\d)", fullname)
+# Compile all the files in the src directory
+for path in glob.glob(f"{src_directory}/*.cpp"):
+    basename = os.path.basename(path)[:-4] # get filename w/o extension
+
+    executable_path = f"{exe_directory}/{basename}.exe" 
+
+    # perform compilation on the commandline
+    if args.recompile or not os.path.exists(executable_path):
+        os.system(f'g++ -Wall {path} -o {executable_path}')
+
+print("Compilation complete\n")
+
+print("Execution start")
+
+# Execute the programs
+for path in glob.glob(f"{exe_directory}/*.exe"):
+    basename = os.path.basename(path)[:-4] # get filename w/o extension
+
+    problem_match = re.search(r"P\d", path) # get the problem number from the file name
     
-    if m:
-        problem = m.group(0)
+    if problem_match:
+        problem = problem_match.group(0)
         
         for test_case in glob.glob(f"tests/{problem}*.in"):
-            
-            m2 = re.search(r"P\d\_(\d+)", test_case)
+            test_case_match = re.search(r"(P\d\_.+).in", test_case)
 
-            num = m2.group(0)
-            os.system(f"{fullname} < {test_case} > results/{filename[:-4]}_{num}.out")
+            test_case_name = test_case_match.group(1)
+            os.system(f"{path} < {test_case} > results/{basename}_{test_case_name}.out")
             
     else:
-        print(f"missing problem number: {filename}")
+        print(f"MISSING PROBLEM NUMBER: {basename}.cpp")
+
+print("Execution complete")
 
 
 

@@ -1,5 +1,4 @@
-grade/
-src/*.cpp
+cpp/*.cpp
 exe/*.exe
 tests/*.in
 results/*.out
