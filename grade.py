@@ -7,6 +7,7 @@ import subprocess
 
 parser = argparse.ArgumentParser(description="Compile and grade cpp files")
 parser.add_argument("-r", "--recompile", help="force recompile files", action="store_true")
+parser.add_argument("-t", "--timeout", help="set the timeout in seconds (default: 5)", type=int, default=5)
 args = parser.parse_args()
 
 compiler = None
@@ -20,7 +21,6 @@ else:
 
 src_directory = "cpp"
 exe_directory = "exe"
-TIMEOUT = 5
 
 print("Compilation start")
 
@@ -55,7 +55,7 @@ for path in glob.glob(f"{exe_directory}/*.exe"):
             with open(test_case, "r") as input_file:
                 with open(f"results/{basename}_{test_case_name}.out", "w") as output_file:
                     try:
-                        subprocess.run(path, stdin = input_file, stdout = output_file, timeout=TIMEOUT)
+                        subprocess.run(path, stdin = input_file, stdout = output_file, timeout=args.timeout)
                     except subprocess.TimeoutExpired:
                         print(f"TIMED OUT: {basename}.cpp ({test_case_name})")
                         output_file.write("<TIMEOUT>")

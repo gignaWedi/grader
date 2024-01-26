@@ -13,4 +13,5 @@ Requires python 3.7+ and g++ or clang++.
 
 ### Options:
 `-r, --recompile` force recompile cpp files
+`-t TIMEOUT, --timeout TIMEOUT` set the timeout for each execution in seconds (defaults to 5)
 
