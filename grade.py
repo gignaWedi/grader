@@ -3,6 +3,7 @@ import re
 import glob
 import argparse
 import shutil
+import subprocess
 
 parser = argparse.ArgumentParser(description="Compile and grade cpp files")
 parser.add_argument("-r", "--recompile", help="force recompile files", action="store_true")
@@ -19,6 +20,7 @@ else:
 
 src_directory = "cpp"
 exe_directory = "exe"
+TIMEOUT = 5
 
 print("Compilation start")
 
@@ -49,7 +51,14 @@ for path in glob.glob(f"{exe_directory}/*.exe"):
             test_case_match = re.search(r"(P\d\_.+).in", test_case)
 
             test_case_name = test_case_match.group(1)
-            os.system(f"{path} < {test_case} > results/{basename}_{test_case_name}.out")
+            
+            with open(test_case, "r") as input_file:
+                with open(f"results/{basename}_{test_case_name}.out", "w") as output_file:
+                    try:
+                        subprocess.run(path, stdin = input_file, stdout = output_file, timeout=TIMEOUT)
+                    except subprocess.TimeoutExpired:
+                        print(f"TIMED OUT: {basename}.cpp ({test_case_name})")
+                        output_file.write("<TIMEOUT>")
             
     else:
         print(f"MISSING PROBLEM NUMBER: {basename}.cpp")
