@@ -2,10 +2,20 @@ import os
 import re
 import glob
 import argparse
+import shutil
 
 parser = argparse.ArgumentParser(description="Compile and grade cpp files")
 parser.add_argument("-r", "--recompile", help="force recompile files", action="store_true")
 args = parser.parse_args()
+
+compiler = None
+if shutil.which("g++") is not None:
+    compiler = "g++"
+elif shutil.which("clang++") is not None:
+    compiler = "clang++"
+else:
+    raise Exception("Missing compiler: install g++ or clang++")
+
 
 src_directory = "cpp"
 exe_directory = "exe"
@@ -20,7 +30,7 @@ for path in glob.glob(f"{src_directory}/*.cpp"):
 
     # perform compilation on the commandline
     if args.recompile or not os.path.exists(executable_path):
-        os.system(f'g++ -Wall {path} -o {executable_path}')
+        os.system(f'{compiler} -Wall -o {executable_path} {path}')
 
 print("Compilation complete\n")
 
