@@ -3,3 +3,4 @@ exe/*.exe
 tests/*.in
 results/*.out
 .vscode/
+expected.txt

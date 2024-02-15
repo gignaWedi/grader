@@ -9,6 +9,7 @@ import subprocess
 parser = argparse.ArgumentParser(description="Compile and grade cpp files")
 parser.add_argument("-r", "--recompile", help="force recompile files", action="store_true")
 parser.add_argument("-t", "--timeout", help="set the timeout in seconds (default: 5)", type=int, default=5)
+parser.add_argument("-c", "--clear", help="clear the directories", action="store_true")
 args = parser.parse_args()
 
 # Directory variables
@@ -16,6 +17,18 @@ src_directory = "cpp"
 exe_directory = "exe"
 test_directory = "tests"
 results_directory = "results"
+
+if args.clear:
+    for file in glob.glob(f"{src_directory}/*.cpp"):
+        os.remove(file)
+    for file in glob.glob(f"{exe_directory}/*.exe"):
+        os.remove(file)
+    for file in glob.glob(f"{test_directory}/*.in"):
+        os.remove(file)
+    for file in glob.glob(f"{results_directory}/*.out"):
+        os.remove(file)
+
+    exit()
 
 # Determine which compiler to use
 compiler = None
